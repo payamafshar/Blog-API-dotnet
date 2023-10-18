@@ -5,6 +5,7 @@ namespace Blog_API.Identity
     public class ApplicationUser : IdentityUser<Guid>
     {
         //if u want add Additional PropertyFor User Add here
-        public string? ExtraProperty { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
     }
 }

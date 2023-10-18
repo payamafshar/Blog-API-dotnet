@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Blog_API.Identity;
 using Blog_API.Modules.Blog;
 using Blog_API.Modules.Users;
+using Blog_API.Modules.Users.Dtos;
 
 namespace Blog_API.Mapping
 {
@@ -12,6 +14,7 @@ namespace Blog_API.Mapping
         {
             //Excluding Password From Client
             CreateMap<BlogEntity, UsersEntity>().ForMember(dest => dest.UserName, opt => opt.Ignore());
+            CreateMap<RegisterDto, ApplicationUser>().ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
         }
     }
 }

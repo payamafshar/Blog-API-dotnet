@@ -1,6 +1,7 @@
 using Blog_API.ApplicationDbContext;
 using Blog_API.Identity;
 using Blog_API.Mapping;
+using Blog_API.Modules.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IUserService, UsersService>();
 builder.Services.AddDbContext<BlogDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default"));
@@ -20,6 +22,7 @@ builder.Services.AddDbContext<BlogDbContext>(options =>
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 //cors localhost:3000
+/*
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policyBuilder =>
@@ -36,6 +39,7 @@ builder.Services.AddCors(options =>
 
 
 });
+*/
 //Identity
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 {
@@ -56,8 +60,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseCors();
+app.UseRouting();
+//app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
