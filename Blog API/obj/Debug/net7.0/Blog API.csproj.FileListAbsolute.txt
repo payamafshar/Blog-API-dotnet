@@ -1,0 +1,43 @@
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\appsettings.Development.json
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\appsettings.json
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Blog API.exe
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Blog API.deps.json
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Blog API.runtimeconfig.json
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Blog API.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Blog API.pdb
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Humanizer.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Microsoft.AspNetCore.OpenApi.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Microsoft.OpenApi.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Mono.TextTemplating.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Npgsql.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\bin\Debug\net7.0\System.CodeDom.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\Blog API.csproj.AssemblyReference.cache
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\Blog API.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\Blog API.AssemblyInfoInputs.cache
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\Blog API.AssemblyInfo.cs
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\Blog API.csproj.CoreCompileInputs.cache
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\Blog API.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\Blog API.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\staticwebassets\msbuild.Blog API.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\staticwebassets\msbuild.build.Blog API.props
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.Blog API.props
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.Blog API.props
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\staticwebassets.pack.json
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\staticwebassets.build.json
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\staticwebassets.development.json
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\scopedcss\bundle\Blog API.styles.css
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\Blog API.csproj.CopyComplete
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\Blog API.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\refint\Blog API.dll
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\Blog API.pdb
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\Blog API.genruntimeconfig.cache
+C:\Users\CSS\Desktop\ASP.NET Web APi\Blog API\Blog API\obj\Debug\net7.0\ref\Blog API.dll
