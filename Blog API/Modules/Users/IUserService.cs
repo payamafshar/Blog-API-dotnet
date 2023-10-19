@@ -5,6 +5,7 @@ namespace Blog_API.Modules.Users
 {
     public interface IUserService
     {
-        Task<ApplicationUser> Register(RegisterDto registerDto); 
+        Task<AuthenticationResponse> Register(RegisterDto registerDto);
+        Task<AuthenticationResponse> Login(LoginDto loginDto);
     }
 }

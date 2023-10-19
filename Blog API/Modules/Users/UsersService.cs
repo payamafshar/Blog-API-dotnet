@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Blog_API.Identity;
+using Blog_API.JwtService;
 using Blog_API.Modules.Users.Dtos;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
@@ -12,11 +13,13 @@ namespace Blog_API.Modules.Users
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
         public UsersService(
               UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
             SignInManager<ApplicationUser> signInManager,
+            IJwtService jwtService,
             IMapper mapper
 
             )
@@ -24,10 +27,11 @@ namespace Blog_API.Modules.Users
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
+            _jwtService = jwtService;
             _mapper = mapper;
 
         }
-        public async Task<ApplicationUser> Register(RegisterDto registerDto)
+        public async Task<AuthenticationResponse> Register(RegisterDto registerDto)
         {
             Console.WriteLine(new { registerDto });
             ApplicationUser existUserWithEmail = await _userManager.FindByEmailAsync(registerDto.Email);
@@ -43,16 +47,34 @@ namespace Blog_API.Modules.Users
 
             };
           IdentityResult result =  await _userManager.CreateAsync(user ,registerDto.Password);
-            Console.WriteLine(new { result });
             if (result.Succeeded)
             {
                await _signInManager.SignInAsync(user , isPersistent: false  );
-                return user;
+
+               AuthenticationResponse authenticationResponse = _jwtService.CreateJwtToken(user);
+                return authenticationResponse;
             }
             string errorMessage = string.Join("", result.Errors.SelectMany(e => e.Description));
             throw new BadHttpRequestException(errorMessage);
         }
 
-       
+
+        public async Task<AuthenticationResponse> Login(LoginDto loginDto)
+        {
+            ApplicationUser user = await _userManager.FindByEmailAsync(loginDto.Email);
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException("Invalid Credentials");
+            }
+            var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password, isPersistent: false, lockoutOnFailure: false);
+
+            if (result.Succeeded)
+            {
+                AuthenticationResponse authenticationResponse = _jwtService.CreateJwtToken(user);
+                return authenticationResponse;
+            }
+            
+            throw new UnauthorizedAccessException("Invalid Credintials1");
+        }
     }
 }

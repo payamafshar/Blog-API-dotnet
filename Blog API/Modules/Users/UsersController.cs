@@ -4,6 +4,7 @@ using Blog_API.Identity;
 using Blog_API.Modules.Users.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +27,7 @@ namespace Blog_API.Modules.Users
             _usersService = usersService;
         }
         [HttpPost]
+        [Route("register")]
         public async Task<ActionResult<ApplicationUser>> Register(RegisterDto registerDto)
         {
             if (ModelState.IsValid == false)
@@ -34,10 +36,24 @@ namespace Blog_API.Modules.Users
                     ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
             }
-            ApplicationUser user = await _usersService.Register(registerDto);
-            Console.WriteLine(user);
+            var authenticationResponse = await _usersService.Register(registerDto);
            
-            return Ok(user);
+            return Ok(authenticationResponse);
+        }
+
+        [HttpPost]
+        [Route("login")]
+        public async Task<ActionResult<ApplicationUser>> Login(LoginDto loginDto)
+        {
+
+            if (ModelState.IsValid == false)
+            {
+                string errorMessage = string.Join('|',
+                   ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
+            }
+            var authenticationResponse = await _usersService.Login(loginDto);
+            return Ok(authenticationResponse);
         }
     }
 }

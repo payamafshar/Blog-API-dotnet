@@ -7,7 +7,8 @@ namespace Blog_API.Modules.Users.Dtos
         [Required]
         public string UserName { get; set; } = string.Empty;
         [EmailAddress]
-        public string? Email { get; set; }
+        [Required]
+        public string Email { get; set; }
         [Required]
         public string PhoneNumber { get; set; } = string.Empty;
         [Required]
