@@ -55,5 +55,19 @@ namespace Blog_API.Modules.Users
             var authenticationResponse = await _usersService.Login(loginDto);
             return Ok(authenticationResponse);
         }
+
+        [HttpPost]
+        [Route("refresh_token")]
+        public async Task<ActionResult> GenerateNewAccessToken(RefreshTokenDto refreshTokenDto)
+        {
+            if (ModelState.IsValid == false)
+            {
+                string errorMessage = string.Join('|',
+                   ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
+            }
+            var authenticationResponse = await _usersService.GenerateNewAccessToken(refreshTokenDto);
+            return Ok(authenticationResponse);
+        }
     }
 }

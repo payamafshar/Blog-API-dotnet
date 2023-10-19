@@ -5,6 +5,7 @@ using Blog_API.Modules.Users.Dtos;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Blog_API.Modules.Users
 {
@@ -52,6 +53,9 @@ namespace Blog_API.Modules.Users
                await _signInManager.SignInAsync(user , isPersistent: false  );
 
                AuthenticationResponse authenticationResponse = _jwtService.CreateJwtToken(user);
+                user.RefreshToken = authenticationResponse.RefreshToken;
+                user.RefreshTokenExpirationDateTime = authenticationResponse.RefreshTokenExpirationDateTime;
+                await _userManager.UpdateAsync(user);
                 return authenticationResponse;
             }
             string errorMessage = string.Join("", result.Errors.SelectMany(e => e.Description));
@@ -71,10 +75,46 @@ namespace Blog_API.Modules.Users
             if (result.Succeeded)
             {
                 AuthenticationResponse authenticationResponse = _jwtService.CreateJwtToken(user);
+                user.RefreshToken = authenticationResponse.RefreshToken;
+                user.RefreshTokenExpirationDateTime = authenticationResponse.RefreshTokenExpirationDateTime;
+                await _userManager.UpdateAsync(user);
                 return authenticationResponse;
             }
             
             throw new UnauthorizedAccessException("Invalid Credintials1");
+        }
+
+        public async Task<ActionResult<AuthenticationResponse>> GenerateNewAccessToken(RefreshTokenDto refreshTokenDto)
+        {
+            if(refreshTokenDto == null)
+            {
+                throw new BadHttpRequestException("Invalid Client Request");
+            }
+
+            string? accesToken = refreshTokenDto.Token;
+            string? refreshToken = refreshTokenDto.RefreshToken;
+
+            ClaimsPrincipal? principal = _jwtService.GetClaimsPrincipalFromJwtToken(accesToken);
+
+            if (principal == null)
+            {
+                throw new BadHttpRequestException("Invalid Jwt Token");
+            }
+
+            string? email = principal.FindFirstValue(ClaimTypes.Email);
+
+            ApplicationUser user = await _userManager.FindByEmailAsync(email);
+
+            if(user == null || user.RefreshToken != refreshTokenDto.RefreshToken || user.RefreshTokenExpirationDateTime <= DateTime.UtcNow)
+            {
+                throw new BadHttpRequestException("Invalid RefreshToken");
+            }
+
+            AuthenticationResponse authenticationResponse = _jwtService.CreateJwtToken(user);
+            user.RefreshToken = authenticationResponse.RefreshToken;
+            user.RefreshTokenExpirationDateTime = authenticationResponse.RefreshTokenExpirationDateTime;
+            await _userManager.UpdateAsync(user);
+            return authenticationResponse;
         }
     }
 }
