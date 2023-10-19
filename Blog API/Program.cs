@@ -25,7 +25,6 @@ builder.Services.AddControllers(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IUserService, UsersService>();
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddDbContext<BlogDbContext>(options =>
 {
@@ -103,7 +102,6 @@ app.UseRouting();
 //app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
