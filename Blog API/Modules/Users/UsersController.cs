@@ -20,7 +20,7 @@ namespace Blog_API.Modules.Users
     //Extending From CustomController and Implementing Route And ControllerName
     public class UsersController : CustomControllerBase
     {
-
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -31,7 +31,8 @@ namespace Blog_API.Modules.Users
             RoleManager<ApplicationRole> roleManager,
             SignInManager<ApplicationUser> signInManager,
             IJwtService jwtService,
-            IMapper mapper
+            IMapper mapper,
+            IWebHostEnvironment webHostEnvironment
 
             )
         {
@@ -40,6 +41,7 @@ namespace Blog_API.Modules.Users
             _signInManager = signInManager;
             _jwtService = jwtService;
             _mapper = mapper;
+            _webHostEnvironment = webHostEnvironment;
 
         }
         [HttpPost]
@@ -73,8 +75,10 @@ namespace Blog_API.Modules.Users
                 user.RefreshToken = authenticationResponse.RefreshToken;
                 user.RefreshTokenExpirationDateTime = authenticationResponse.RefreshTokenExpirationDateTime;
                 await _userManager.UpdateAsync(user);
+                //_webHostEnvironment.IsDevelopment() == true ? sign a Cookie with secure =false : sign a Cookie with Secure =true
                 return Ok(authenticationResponse);
             }
+         
             string errorMessage = string.Join("", result.Errors.SelectMany(e => e.Description));
 
             return BadRequest(errorMessage);
@@ -97,12 +101,13 @@ namespace Blog_API.Modules.Users
                 return BadRequest("Invalid Credentials");
             }
             var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password, isPersistent: false, lockoutOnFailure: false);
-
+            
             if (result.Succeeded)
             {
                 AuthenticationResponse authenticationResponse = _jwtService.CreateJwtToken(user);
                 user.RefreshToken = authenticationResponse.RefreshToken;
                 user.RefreshTokenExpirationDateTime = authenticationResponse.RefreshTokenExpirationDateTime;
+                //_webHostEnvironment.IsDevelopment() == true ? sign a Cookie with secure =false : sign a Cookie with Secure =true
                 await _userManager.UpdateAsync(user);
                 return Ok(authenticationResponse);
             }

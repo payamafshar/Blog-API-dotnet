@@ -30,7 +30,10 @@ builder.Services.AddDbContext<BlogDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default"));
 });
+//Addin Http Client 
+builder.Services.AddHttpClient();
 
+//Addin Auto Mapper to mappin Response
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 //cors localhost:3000
 /*

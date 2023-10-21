@@ -5,7 +5,7 @@ namespace Blog_API.CustomValidations
     public class CustomValidatorsForYear : ValidationAttribute
     {
         public int MinimumYear { get; set; }
-        public string DefaultErroMessage { get; set } = "Some Custom Error Message";
+        public string DefaultErroMessage { get; set; } = "Some Custom Error Message";
         public CustomValidatorsForYear()
         {
             
