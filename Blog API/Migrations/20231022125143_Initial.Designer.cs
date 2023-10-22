@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Blog_API.Migrations
 {
     [DbContext(typeof(BlogDbContext))]
-    [Migration("20231018145156_adding users tale")]
-    partial class addinguserstale
+    [Migration("20231022125143_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -72,7 +72,10 @@ namespace Blog_API.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("ExtraProperty")
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
                         .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
@@ -98,6 +101,12 @@ namespace Blog_API.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("RefreshTokenExpirationDateTime")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
@@ -120,6 +129,30 @@ namespace Blog_API.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Blog_API.Modules.Blog.BlogEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("img")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("title")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Blogs");
+                });
+
             modelBuilder.Entity("Blog_API.Modules.Users.UsersEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -128,7 +161,8 @@ namespace Blog_API.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(14)
+                        .HasColumnType("character varying(14)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -136,9 +170,16 @@ namespace Blog_API.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(14)
+                        .HasColumnType("varchar(14)")
+                        .HasDefaultValue("ApplicationUser")
+                        .HasColumnName("unige Username");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

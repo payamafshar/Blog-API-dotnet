@@ -126,6 +126,30 @@ namespace Blog_API.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Blog_API.Modules.Blog.BlogEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("img")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("title")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Blogs");
+                });
+
             modelBuilder.Entity("Blog_API.Modules.Users.UsersEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -134,7 +158,8 @@ namespace Blog_API.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(14)
+                        .HasColumnType("character varying(14)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -142,9 +167,16 @@ namespace Blog_API.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(14)
+                        .HasColumnType("varchar(14)")
+                        .HasDefaultValue("ApplicationUser")
+                        .HasColumnName("unige Username");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

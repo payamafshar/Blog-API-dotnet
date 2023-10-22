@@ -2,6 +2,7 @@ using Blog_API.ApplicationDbContext;
 using Blog_API.Identity;
 using Blog_API.JwtService;
 using Blog_API.Mapping;
+using Blog_API.Modules.Blog;
 using Blog_API.Modules.Users;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,17 +16,21 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers(options =>
 {
     //Authorization Policy [Authoriza] Globaly
-    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-    options.Filters.Add(new AuthorizeFilter(policy));
+   //ar policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    //tions.Filters.Add(new AuthorizeFilter(policy));
 });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//Services
 builder.Services.AddTransient<IJwtService, JwtService>();
+builder.Services.AddScoped<IBlogService, BlogService>();
+
+//DbContext
 builder.Services.AddDbContext<BlogDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default"));
