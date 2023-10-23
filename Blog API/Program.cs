@@ -2,6 +2,7 @@ using Blog_API.ApplicationDbContext;
 using Blog_API.Identity;
 using Blog_API.JwtService;
 using Blog_API.Mapping;
+using Blog_API.EexceptionMiddleware;
 using Blog_API.Modules.Blog;
 using Blog_API.Modules.Users;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -104,12 +105,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.UseHttpsRedirection();
 app.UseRouting();
 //app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
 app.Run();

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Blog_API.ApplicationDbContext;
+using Blog_API.EexceptionMiddleware;
 using Blog_API.Modules.Blog.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -42,6 +43,7 @@ namespace Blog_API.Modules.Blog
 
         public async Task<List<BlogEntity>> GetAll()
         {
+           
             var blogs = await _dbContext.Blogs.ToListAsync();
 
             return blogs;
