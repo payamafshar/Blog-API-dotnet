@@ -6,7 +6,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Blog_API.JwtService
+namespace Blog_API.JwtServices
 {
     public class JwtService : IJwtService
     {

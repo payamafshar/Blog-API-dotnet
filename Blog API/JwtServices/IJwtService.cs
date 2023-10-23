@@ -2,7 +2,7 @@
 using Blog_API.Modules.Users.Dtos;
 using System.Security.Claims;
 
-namespace Blog_API.JwtService
+namespace Blog_API.JwtServices
 {
     public interface IJwtService
     {

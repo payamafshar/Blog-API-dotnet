@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Blog_API.CustomController;
 using Blog_API.Identity;
-using Blog_API.JwtService;
+using Blog_API.JwtServices;
 using Blog_API.Modules.Users.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
