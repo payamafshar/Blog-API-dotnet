@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Blog_API.CustomController;
 using Blog_API.Modules.Blog.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog_API.Modules.Blog

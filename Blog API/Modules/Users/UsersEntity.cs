@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Blog_API.Modules.Likes_Comments.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Blog_API.Modules.Users
 {
@@ -12,5 +13,7 @@ namespace Blog_API.Modules.Users
         [Required]
         [StringLength(14)]
         public string Email { get; set; }
+
+       
     }
 }

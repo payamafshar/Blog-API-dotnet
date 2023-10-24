@@ -150,6 +150,27 @@ namespace Blog_API.Migrations
                     b.ToTable("Blogs");
                 });
 
+            modelBuilder.Entity("Blog_API.Modules.Likes_Comments.Entities.LikesEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("BlogId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BlogId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Likes");
+                });
+
             modelBuilder.Entity("Blog_API.Modules.Users.UsersEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -178,7 +199,7 @@ namespace Blog_API.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("UsersEntity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -284,6 +305,21 @@ namespace Blog_API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Blog_API.Modules.Likes_Comments.Entities.LikesEntity", b =>
+                {
+                    b.HasOne("Blog_API.Modules.Blog.BlogEntity", "Blog")
+                        .WithMany("Likes")
+                        .HasForeignKey("BlogId");
+
+                    b.HasOne("Blog_API.Identity.ApplicationUser", "User")
+                        .WithMany("Likes")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Blog");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Blog_API.Identity.ApplicationRole", null)
@@ -333,6 +369,16 @@ namespace Blog_API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Blog_API.Identity.ApplicationUser", b =>
+                {
+                    b.Navigation("Likes");
+                });
+
+            modelBuilder.Entity("Blog_API.Modules.Blog.BlogEntity", b =>
+                {
+                    b.Navigation("Likes");
                 });
 #pragma warning restore 612, 618
         }

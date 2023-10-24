@@ -3,14 +3,14 @@ using Blog_API.Identity;
 using Blog_API.JwtServices;
 using Blog_API.Mapping;
 using Blog_API.Modules.Blog;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
-
-
+using Blog_API.Modules.Likes_Comments;
+using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Blog_API.ConfigurationExtention
 {
@@ -18,12 +18,17 @@ namespace Blog_API.ConfigurationExtention
     {
         public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration)
         {
+
             services.AddControllers(options =>
             {
+
                 //Authorization Policy [Authoriza] Globaly
                 //ar policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 //tions.Filters.Add(new AuthorizeFilter(policy));
-            });
+            }).AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+
+      
+
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
@@ -31,7 +36,9 @@ namespace Blog_API.ConfigurationExtention
             //Services
             services.AddTransient<IJwtService, JwtService>();
             services.AddScoped<IBlogService, BlogService>();
+            services.AddScoped<ILikeAndCommentService, LikesAndCommentService>();
 
+  
             //DbContext
             services.AddDbContext<BlogDbContext>(options =>
             {
@@ -81,7 +88,7 @@ namespace Blog_API.ConfigurationExtention
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 //IF user not authenticated with jwt redirect to cookie athenticationScheme
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                //options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 
             }).AddJwtBearer(options =>
             {

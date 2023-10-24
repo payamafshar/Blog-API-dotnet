@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Blog_API.Modules.Likes_Comments.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace Blog_API.Identity
 {
@@ -11,6 +12,8 @@ namespace Blog_API.Identity
         public string? RefreshToken { get; set; }
 
         public DateTime? RefreshTokenExpirationDateTime { get; set; }
+
+        public ICollection<LikesEntity>? Likes { get; set; }
 
     }
 }

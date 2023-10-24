@@ -45,7 +45,7 @@ namespace Blog_API.Modules.Blog
         {
            
             var blogs = await _dbContext.Blogs.ToListAsync();
-
+            
             return blogs;
         }
 

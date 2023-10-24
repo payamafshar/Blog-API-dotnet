@@ -39,7 +39,7 @@ namespace Blog_API.EexceptionMiddleware
             {
                 var response = context.Response;
                 response.ContentType = "application/json";
-
+                Console.WriteLine(exception);
                 // get the response code and message
                 var (status, message) = GetResponse(exception);
                 response.StatusCode = (int)status;

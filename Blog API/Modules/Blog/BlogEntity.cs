@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Blog_API.Modules.Likes_Comments.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Blog_API.Modules.Blog
 {
@@ -14,5 +15,7 @@ namespace Blog_API.Modules.Blog
 
 
         public string text { get; set; }
+
+        public ICollection<LikesEntity>? Likes { get; set; }
     }
 }

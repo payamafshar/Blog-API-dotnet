@@ -3,6 +3,7 @@ using Blog_API.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Blog_API.Modules.Blog;
+using Blog_API.Modules.Likes_Comments.Entities;
 
 namespace Blog_API.ApplicationDbContext
 {
@@ -14,9 +15,9 @@ namespace Blog_API.ApplicationDbContext
                 
         }
 
-        public DbSet<UsersEntity> Users { get; set; }
 
         public DbSet<BlogEntity> Blogs { get; set; }
+        public DbSet<LikesEntity> Likes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

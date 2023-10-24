@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
 using Blog_API.CustomController;
 using Blog_API.Identity;
 using Blog_API.JwtServices;
@@ -8,6 +9,8 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Security.Claims;
 
 namespace Blog_API.Modules.Users
@@ -21,6 +24,7 @@ namespace Blog_API.Modules.Users
     public class UsersController : CustomControllerBase
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHttpContextAccessor _httpContext;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -32,7 +36,10 @@ namespace Blog_API.Modules.Users
             SignInManager<ApplicationUser> signInManager,
             IJwtService jwtService,
             IMapper mapper,
-            IWebHostEnvironment webHostEnvironment
+            IWebHostEnvironment webHostEnvironment,
+            IHttpContextAccessor httpContextAccessor
+
+
 
             )
         {
@@ -42,6 +49,7 @@ namespace Blog_API.Modules.Users
             _jwtService = jwtService;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
+            _httpContext = httpContextAccessor;
 
         }
         [HttpPost]
@@ -154,6 +162,21 @@ namespace Blog_API.Modules.Users
             user.RefreshTokenExpirationDateTime = authenticationResponse.RefreshTokenExpirationDateTime;
             await _userManager.UpdateAsync(user);
             return Ok(authenticationResponse);
+        }
+
+        [HttpGet]
+        [Route("loginuser")]
+        [Authorize]
+
+        public  async Task<ActionResult<ApplicationUser>>  GetLoginUser()
+        {
+            string Email = _httpContext.HttpContext?.User.Email();
+            if(Email == null)
+            {
+                return Unauthorized();
+            }
+            ApplicationUser user = await _userManager.Users.Include(u => u.Likes).FirstOrDefaultAsync(item => item.Email == Email);
+            return Ok(user);
         }
     }
 }
