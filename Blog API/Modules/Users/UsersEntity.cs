@@ -9,6 +9,7 @@ namespace Blog_API.Modules.Users
         public Guid Id { get; set; }
         [StringLength(14)]
         public string UserName { get; set; }
+
         public string Password { get; set; }
         [Required]
         [StringLength(14)]

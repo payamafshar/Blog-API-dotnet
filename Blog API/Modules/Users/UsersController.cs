@@ -175,7 +175,7 @@ namespace Blog_API.Modules.Users
             {
                 return Unauthorized();
             }
-            ApplicationUser user = await _userManager.Users.Include(u => u.Likes).FirstOrDefaultAsync(item => item.Email == Email);
+            ApplicationUser user = await _userManager.Users.Include(u => u.Likes).ThenInclude(like => like.Blog).FirstOrDefaultAsync(item => item.Email == Email);
             return Ok(user);
         }
     }
