@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Blog_API.ApplicationDbContext;
 using Blog_API.Identity;
+using Blog_API.Modules.Blog;
 using Blog_API.Modules.Likes_Comments.Dtos;
 using Blog_API.Modules.Likes_Comments.Entities;
+using Blog_API.Modules.Likes_Comments.Execptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,6 +42,29 @@ namespace Blog_API.Modules.Likes_Comments
             return mappedComment;
         }
 
+        public async Task<RepyCommentEntity> CreateRepyCommentAsync(CreateReplyCommentDto createReplyCommentDto,  string email, Guid commentId)
+        {
+      
+
+            var findedComment = await _dbContext.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
+            if(findedComment == null)
+            {
+                throw new NotFoundException("comment Not Found");
+            }
+            ApplicationUser user = await _userManager.FindByEmailAsync(email);
+
+            var mappedReplyComment = _mapper.Map<RepyCommentEntity>(createReplyCommentDto);
+
+            mappedReplyComment.Author = user;
+            mappedReplyComment.AuthorId = user.Id;
+            mappedReplyComment.Comment = findedComment;
+            mappedReplyComment.CommentId = findedComment.Id;
+
+            await _dbContext.ReplyComments.AddAsync(mappedReplyComment);
+            await _dbContext.SaveChangesAsync();
+            return mappedReplyComment;
+        }
+
         public async Task<string> CreateToggleLikeAsync(Guid blogId , string email)
         {
 
@@ -75,6 +100,11 @@ namespace Blog_API.Modules.Likes_Comments
                 return "Blog Dissliked";
             }
             return "Internal Server Error";
+        }
+
+        public async Task<List<BlogEntity>> GetAllBlogsAsync()
+        {
+            return await _dbContext.Blogs.Include(blog => blog.Comments).ThenInclude(comment => comment.ReplyComment).ToListAsync();
         }
     }
 }

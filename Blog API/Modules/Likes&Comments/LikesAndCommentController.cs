@@ -1,4 +1,5 @@
 ﻿using Blog_API.CustomController;
+using Blog_API.Modules.Blog;
 using Blog_API.Modules.Likes_Comments.Dtos;
 using Blog_API.Modules.Likes_Comments.Entities;
 using Blog_API.Modules.Users;
@@ -50,6 +51,28 @@ namespace Blog_API.Modules.Likes_Comments
                 return NotFound();
             }
             return Ok(comment);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("reply/{commentId:Guid}")]
+
+        public  async Task<ActionResult<RepyCommentEntity>> CreateReplyComment (CreateReplyCommentDto createReplyCommentDto , [FromRoute] Guid commentId )
+        {
+            string? email = _httpContextAccessor.HttpContext?.User.Email();
+
+            var replyComment = await _likeAndCommentService.CreateRepyCommentAsync(createReplyCommentDto,  email, commentId);
+
+           return Ok(replyComment);
+        }
+
+        [HttpGet]
+        [Route("getAll")]
+        public async Task<ActionResult<List<BlogEntity>>> GetAllBlogs ()
+        {
+            var blogs = await _likeAndCommentService.GetAllBlogsAsync();
+
+            return Ok(blogs);
         }
     }
 }

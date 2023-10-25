@@ -22,6 +22,7 @@ namespace Blog_API.Mapping
             CreateMap<BlogEntity, CreateBlogDto>().ReverseMap();
             CreateMap<LikesEntity, LikeDto>().ReverseMap();
             CreateMap<CommentsEntity, CreateCommentDto>().ReverseMap();
+            CreateMap<RepyCommentEntity, CreateReplyCommentDto>().ReverseMap();
         }
     }
 }
