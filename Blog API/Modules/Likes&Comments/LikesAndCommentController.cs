@@ -33,9 +33,9 @@ namespace Blog_API.Modules.Likes_Comments
              return Ok(likes);
 
         }
+        [Authorize]
         [HttpPost]
         [Route("comment/{blogId:Guid}")]
-        [Authorize]
         public async Task<ActionResult<CommentsEntity>> CreateComment(CreateCommentDto createCommentDto,[FromRoute] Guid blogId)
         {
             string? email = _httpContextAccessor.HttpContext?.User.Email();

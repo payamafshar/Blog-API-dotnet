@@ -10,7 +10,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 using Blog_API.Modules.Likes_Comments;
 using Newtonsoft.Json;
-using System.Text.Json.Serialization;
+using Microsoft.OpenApi.Models;
+
 
 namespace Blog_API.ConfigurationExtention
 {
@@ -32,7 +33,35 @@ namespace Blog_API.ConfigurationExtention
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "BlogApi", Version = "V1" });
+                options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = JwtBearerDefaults.AuthenticationScheme,
+                            },
+                            Scheme = "OAuth2",
+                            Name = JwtBearerDefaults.AuthenticationScheme,
+                            In = ParameterLocation.Header
+                        },
+                        new List<string>()
+                    }
+                });
+          
+            });
             //Services
             services.AddTransient<IJwtService, JwtService>();
             services.AddScoped<IBlogService, BlogService>();
@@ -87,8 +116,11 @@ namespace Blog_API.ConfigurationExtention
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+
                 //IF user not authenticated with jwt redirect to cookie athenticationScheme
-                //options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+
 
             }).AddJwtBearer(options =>
             {
@@ -104,7 +136,7 @@ namespace Blog_API.ConfigurationExtention
                     IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
                 };
             });
-            services.AddAuthorization(options => { });
+            services.AddAuthorization();
             return services;
         }
     }
