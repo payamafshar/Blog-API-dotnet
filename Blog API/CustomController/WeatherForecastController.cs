@@ -1,3 +1,4 @@
+using Blog_API.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog_API.Controllers
@@ -19,6 +20,8 @@ namespace Blog_API.Controllers
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
+        [TypeFilter(typeof(ModelStateValidatorForSpeceficController) , Arguments = new object [] {"exampleKey" , "exampleValue" , 1})]
+        //Also Can Set With Order=number for thrid argument but in this way we cant set order to Global Filter
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
