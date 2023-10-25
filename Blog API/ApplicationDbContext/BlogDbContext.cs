@@ -18,6 +18,8 @@ namespace Blog_API.ApplicationDbContext
 
         public DbSet<BlogEntity> Blogs { get; set; }
         public DbSet<LikesEntity> Likes { get; set; }
+        public DbSet<CommentsEntity> Comments { get; set; }
+        public DbSet<RepyCommentEntity> ReplyComments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -19,6 +19,27 @@ namespace Blog_API.Modules.Likes_Comments
             _userManager = userManager;
             _mapper = mapper;
         }
+
+        public async Task<CommentsEntity> CreateCommentAsync(CreateCommentDto createCommentDto,Guid blogId, string email)
+        {
+            var findedBlog = await _dbContext.Blogs.FirstOrDefaultAsync(b => b.Id == blogId);
+           
+            Console.WriteLine(findedBlog?.title);
+            if (findedBlog == null)
+            {
+                return null;
+            }
+            ApplicationUser user = await _userManager.FindByEmailAsync(email);
+            var mappedComment = _mapper.Map<CommentsEntity>(createCommentDto);
+            mappedComment.Blog = findedBlog;
+            mappedComment.BlogId = findedBlog.Id;
+            mappedComment.Author = user;
+            mappedComment.AuthorId = user.Id;
+            await _dbContext.Comments.AddAsync(mappedComment);
+            await _dbContext.SaveChangesAsync();
+            return mappedComment;
+        }
+
         public async Task<string> CreateToggleLikeAsync(Guid blogId , string email)
         {
 

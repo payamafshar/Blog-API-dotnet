@@ -18,5 +18,7 @@ namespace Blog_API.Modules.Blog
         public string text { get; set; }
       
         public ICollection<LikesEntity>? Likes { get; set; }
+
+        public ICollection<CommentsEntity>? Comments { get; set; }
     }
 }

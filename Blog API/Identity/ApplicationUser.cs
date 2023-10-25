@@ -15,5 +15,6 @@ namespace Blog_API.Identity
 
         public ICollection<LikesEntity>? Likes { get; set; }
 
+        public ICollection<CommentsEntity> Comments { get; set; }
     }
 }

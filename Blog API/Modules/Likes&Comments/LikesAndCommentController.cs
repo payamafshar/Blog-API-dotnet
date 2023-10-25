@@ -1,4 +1,6 @@
 ﻿using Blog_API.CustomController;
+using Blog_API.Modules.Likes_Comments.Dtos;
+using Blog_API.Modules.Likes_Comments.Entities;
 using Blog_API.Modules.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +32,24 @@ namespace Blog_API.Modules.Likes_Comments
             }
              return Ok(likes);
 
+        }
+        [HttpPost]
+        [Route("comment/{blogId:Guid}")]
+        [Authorize]
+        public async Task<ActionResult<CommentsEntity>> CreateComment(CreateCommentDto createCommentDto,[FromRoute] Guid blogId)
+        {
+            string? email = _httpContextAccessor.HttpContext?.User.Email();
+            if(email == null)
+            {
+                return Unauthorized();
+            }
+            var comment = await _likeAndCommentService.CreateCommentAsync(createCommentDto, blogId, email);
+
+            if(comment == null)
+            {
+                return NotFound();
+            }
+            return Ok(comment);
         }
     }
 }

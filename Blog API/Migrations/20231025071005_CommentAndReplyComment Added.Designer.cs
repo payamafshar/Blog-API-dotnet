@@ -3,6 +3,7 @@ using System;
 using Blog_API.ApplicationDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Blog_API.Migrations
 {
     [DbContext(typeof(BlogDbContext))]
-    partial class BlogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231025071005_CommentAndReplyComment Added")]
+    partial class CommentAndReplyCommentAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -156,9 +159,6 @@ namespace Blog_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("AuthorId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("BlogId")
                         .HasColumnType("uuid");
 
@@ -167,8 +167,6 @@ namespace Blog_API.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
 
                     b.HasIndex("BlogId");
 
@@ -202,9 +200,6 @@ namespace Blog_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("AuthorId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("CommentId")
                         .HasColumnType("uuid");
 
@@ -213,8 +208,6 @@ namespace Blog_API.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
 
                     b.HasIndex("CommentId");
 
@@ -357,19 +350,11 @@ namespace Blog_API.Migrations
 
             modelBuilder.Entity("Blog_API.Modules.Likes_Comments.Entities.CommentsEntity", b =>
                 {
-                    b.HasOne("Blog_API.Identity.ApplicationUser", "Author")
-                        .WithMany("Comments")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Blog_API.Modules.Blog.BlogEntity", "Blog")
                         .WithMany("Comments")
                         .HasForeignKey("BlogId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Author");
 
                     b.Navigation("Blog");
                 });
@@ -391,19 +376,11 @@ namespace Blog_API.Migrations
 
             modelBuilder.Entity("Blog_API.Modules.Likes_Comments.Entities.RepyCommentEntity", b =>
                 {
-                    b.HasOne("Blog_API.Identity.ApplicationUser", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Blog_API.Modules.Likes_Comments.Entities.CommentsEntity", "Comment")
                         .WithMany("ReplyComment")
                         .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Author");
 
                     b.Navigation("Comment");
                 });
@@ -461,8 +438,6 @@ namespace Blog_API.Migrations
 
             modelBuilder.Entity("Blog_API.Identity.ApplicationUser", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("Likes");
                 });
 
