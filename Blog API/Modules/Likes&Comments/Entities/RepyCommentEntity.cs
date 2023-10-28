@@ -1,4 +1,4 @@
-﻿using Blog_API.Identity;
+﻿using Blog_API.Modules.Users;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Blog_API.Modules.Likes_Comments.Entities
@@ -9,12 +9,12 @@ namespace Blog_API.Modules.Likes_Comments.Entities
 
         public string Content { get; set; }
 
-        public Guid CommentId { get; set; }
+        public Guid? CommentId { get; set; }
         [ForeignKey(nameof(CommentId))]
-        public CommentsEntity Comment { get; set; }
+        public CommentsEntity? Comment { get; set; }
 
-        public Guid AuthorId { get; set; }
+        public Guid? AuthorId { get; set; }
         [ForeignKey(nameof(AuthorId))]
-        public ApplicationUser Author { get; set; }
+        public UsersEntity? Author { get; set; }
     }
 }

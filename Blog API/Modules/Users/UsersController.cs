@@ -1,16 +1,12 @@
 ﻿
 using AutoMapper;
+using Blog_API.ApplicationDbContext;
 using Blog_API.CustomController;
-using Blog_API.Identity;
 using Blog_API.JwtServices;
 using Blog_API.Modules.Users.Dtos;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System.Security.Claims;
 
 namespace Blog_API.Modules.Users
@@ -25,27 +21,22 @@ namespace Blog_API.Modules.Users
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IHttpContextAccessor _httpContext;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<ApplicationRole> _roleManager;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly BlogDbContext _dbContext;
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
         public UsersController(
-              UserManager<ApplicationUser> userManager,
-            RoleManager<ApplicationRole> roleManager,
-            SignInManager<ApplicationUser> signInManager,
+
+
             IJwtService jwtService,
             IMapper mapper,
             IWebHostEnvironment webHostEnvironment,
-            IHttpContextAccessor httpContextAccessor
-
+            IHttpContextAccessor httpContextAccessor,
+            BlogDbContext dbContext
 
 
             )
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _signInManager = signInManager;
+            _dbContext = dbContext;
             _jwtService = jwtService;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
@@ -62,39 +53,32 @@ namespace Blog_API.Modules.Users
                     ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessages);
             }
-            ApplicationUser existUserWithEmail = await _userManager.FindByEmailAsync(registerDto.Email);
+            UsersEntity? existUserWithEmail = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == registerDto.Email);
             if (existUserWithEmail != null)
             {
                 return BadRequest("Email Already Exists");
             }
-            ApplicationUser user = new ApplicationUser()
-            {
-                UserName = registerDto.UserName,
-                Email = registerDto.Email,
-                PhoneNumber = registerDto.PhoneNumber,
+         
+            var mappedUser = _mapper.Map<UsersEntity>(registerDto);
 
-            };
-            IdentityResult result = await _userManager.CreateAsync(user, registerDto.Password);
-            if (result.Succeeded)
-            {
-                await _signInManager.SignInAsync(user, isPersistent: false);
 
-                AuthenticationResponse authenticationResponse = _jwtService.CreateJwtToken(user);
-                user.RefreshToken = authenticationResponse.RefreshToken;
-                user.RefreshTokenExpirationDateTime = authenticationResponse.RefreshTokenExpirationDateTime;
-                await _userManager.UpdateAsync(user);
+            
+
+            AuthenticationResponse authenticationResponse = _jwtService.CreateJwtToken(mappedUser);
+            Console.WriteLine(authenticationResponse.Token);
+            mappedUser.RefreshToken = authenticationResponse.RefreshToken;
+            mappedUser.RefreshTokenExpirationDateTime = authenticationResponse.RefreshTokenExpirationDateTime;
+            await _dbContext.Users.AddAsync(mappedUser);
+            await _dbContext.SaveChangesAsync();
                 //_webHostEnvironment.IsDevelopment() == true ? sign a Cookie with secure =false : sign a Cookie with Secure =true
                 return Ok(authenticationResponse);
-            }
+           
          
-            string errorMessage = string.Join("", result.Errors.SelectMany(e => e.Description));
-
-            return BadRequest(errorMessage);
         }
 
         [HttpPost]
         [Route("login")]
-        public async Task<ActionResult<ApplicationUser>> Login(LoginDto loginDto)
+        public async Task<ActionResult<UsersEntity>> Login(LoginDto loginDto)
         {
 
             if (ModelState.IsValid == false)
@@ -103,23 +87,23 @@ namespace Blog_API.Modules.Users
                    ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
             }
-            ApplicationUser user = await _userManager.FindByEmailAsync(loginDto.Email);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
             if (user == null)
             {
                 return BadRequest("Invalid Credentials");
             }
-            var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password, isPersistent: false, lockoutOnFailure: false);
+        
             
-            if (result.Succeeded)
-            {
+           
                 AuthenticationResponse authenticationResponse = _jwtService.CreateJwtToken(user);
                 user.RefreshToken = authenticationResponse.RefreshToken;
                 user.RefreshTokenExpirationDateTime = authenticationResponse.RefreshTokenExpirationDateTime;
-                //_webHostEnvironment.IsDevelopment() == true ? sign a Cookie with secure =false : sign a Cookie with Secure =true
-                await _userManager.UpdateAsync(user);
+            //_webHostEnvironment.IsDevelopment() == true ? sign a Cookie with secure =false : sign a Cookie with Secure =true
+           var updatedUser =  await _dbContext.Users.Where(u => u.Email == user.Email).ExecuteUpdateAsync(setter => setter.SetProperty(r => r.RefreshToken, authenticationResponse.RefreshToken).SetProperty(r => r.RefreshTokenExpirationDateTime, authenticationResponse.RefreshTokenExpirationDateTime));
+         
                 return Ok(authenticationResponse);
-            }
-            return BadRequest("Invalid Credentials");
+         
+        
            
         }
 
@@ -150,7 +134,7 @@ namespace Blog_API.Modules.Users
 
             string? email = principal.FindFirstValue(ClaimTypes.Email);
 
-            ApplicationUser user = await _userManager.FindByEmailAsync(email);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
 
             if (user == null || user.RefreshToken != refreshTokenDto.RefreshToken || user.RefreshTokenExpirationDateTime <= DateTime.UtcNow)
             {
@@ -160,7 +144,7 @@ namespace Blog_API.Modules.Users
             AuthenticationResponse authenticationResponse = _jwtService.CreateJwtToken(user);
             user.RefreshToken = authenticationResponse.RefreshToken;
             user.RefreshTokenExpirationDateTime = authenticationResponse.RefreshTokenExpirationDateTime;
-            await _userManager.UpdateAsync(user);
+            var updatedUser = await _dbContext.Users.Where(u => u.Email == user.Email).ExecuteUpdateAsync(setter => setter.SetProperty(r => r.RefreshToken, authenticationResponse.RefreshToken).SetProperty(r => r.RefreshTokenExpirationDateTime, authenticationResponse.RefreshTokenExpirationDateTime)); ;
             return Ok(authenticationResponse);
         }
 
@@ -168,14 +152,14 @@ namespace Blog_API.Modules.Users
         [Route("loginuser")]
         [Authorize]
 
-        public  async Task<ActionResult<ApplicationUser>>  GetLoginUser()
+        public  async Task<ActionResult<UsersEntity>>  GetLoginUser()
         {
-            string Email = _httpContext.HttpContext?.User.Email();
+            string? Email = _httpContext.HttpContext?.User.Email();
             if(Email == null)
             {
                 return Unauthorized();
             }
-            ApplicationUser user = await _userManager.Users.Include(u => u.Likes).ThenInclude(like => like.Blog).FirstOrDefaultAsync(item => item.Email == Email);
+            var user = await _dbContext.Users.Include(u => u.Likes).ThenInclude(like => like.Blog).FirstOrDefaultAsync(item => item.Email == Email);
             return Ok(user);
         }
     }

@@ -12,9 +12,17 @@ namespace Blog_API.Modules.Users
 
         public string Password { get; set; }
         [Required]
-        [StringLength(14)]
+        [StringLength(35)]
         public string Email { get; set; }
 
-       
+        public string? RefreshToken { get; set; }
+
+        public DateTime? RefreshTokenExpirationDateTime { get; set; }
+
+        public ICollection<LikesEntity>? Likes { get; set; }
+
+        public ICollection<CommentsEntity>? Comments { get; set; }
+
+
     }
 }

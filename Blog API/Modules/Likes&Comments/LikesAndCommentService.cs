@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Blog_API.ApplicationDbContext;
-using Blog_API.Identity;
 using Blog_API.Modules.Blog;
 using Blog_API.Modules.Likes_Comments.Dtos;
 using Blog_API.Modules.Likes_Comments.Entities;
@@ -13,12 +12,12 @@ namespace Blog_API.Modules.Likes_Comments
     public class LikesAndCommentService : ILikeAndCommentService
     {
         private readonly BlogDbContext _dbContext;
-        private readonly UserManager<ApplicationUser> _userManager;
+   
         private readonly IMapper _mapper;
-        public LikesAndCommentService(BlogDbContext dbContext, UserManager<ApplicationUser> userManager,IMapper mapper)
+        public LikesAndCommentService(BlogDbContext dbContext,IMapper mapper)
         {
             _dbContext = dbContext;
-            _userManager = userManager;
+          
             _mapper = mapper;
         }
 
@@ -31,7 +30,7 @@ namespace Blog_API.Modules.Likes_Comments
             {
                 return null;
             }
-            ApplicationUser user = await _userManager.FindByEmailAsync(email);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
             var mappedComment = _mapper.Map<CommentsEntity>(createCommentDto);
             mappedComment.Blog = findedBlog;
             mappedComment.BlogId = findedBlog.Id;
@@ -51,7 +50,7 @@ namespace Blog_API.Modules.Likes_Comments
             {
                 throw new NotFoundException("comment Not Found");
             }
-            ApplicationUser user = await _userManager.FindByEmailAsync(email);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
 
             var mappedReplyComment = _mapper.Map<RepyCommentEntity>(createReplyCommentDto);
 
@@ -74,7 +73,7 @@ namespace Blog_API.Modules.Likes_Comments
             {
                 return null;
             }
-            ApplicationUser user = await _userManager.FindByEmailAsync(email);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
             Console.WriteLine(user.Id);
              LikesEntity? existLike = user.Likes?.FirstOrDefault(temp => temp.BlogId == blogId);
             if (existLike == null)
@@ -94,12 +93,10 @@ namespace Blog_API.Modules.Likes_Comments
                 return "Blog Liked";
             }
             user.Likes.Remove(existLike);
-            var updateResult = await _userManager.UpdateAsync(user);
-            if(updateResult.Succeeded == true)
-            {
+            await _dbContext.SaveChangesAsync();
+            
                 return "Blog Dissliked";
-            }
-            return "Internal Server Error";
+     
         }
 
         public async Task<List<BlogEntity>> GetAllBlogsAsync()

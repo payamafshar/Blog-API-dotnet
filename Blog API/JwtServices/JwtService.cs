@@ -1,4 +1,4 @@
-﻿using Blog_API.Identity;
+﻿using Blog_API.Modules.Users;
 using Blog_API.Modules.Users.Dtos;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,7 +15,7 @@ namespace Blog_API.JwtServices
         {
             _configuration = configuration;
         }
-        public AuthenticationResponse CreateJwtToken(ApplicationUser user)
+        public AuthenticationResponse CreateJwtToken(UsersEntity user)
         {
             DateTime expiration = DateTime.UtcNow.AddDays(Convert.ToDouble(_configuration["Jwt:Expires"]));
 

@@ -1,5 +1,4 @@
-﻿using Blog_API.Identity;
-using Blog_API.Modules.Blog;
+﻿using Blog_API.Modules.Blog;
 using Blog_API.Modules.Users;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,6 +18,6 @@ namespace Blog_API.Modules.Likes_Comments.Entities
         public Guid? UserId { get; set; }
         [ForeignKey(nameof(UserId))]
         
-        public ApplicationUser? User { get; set;}
+        public UsersEntity? User { get; set;}
     }
 }

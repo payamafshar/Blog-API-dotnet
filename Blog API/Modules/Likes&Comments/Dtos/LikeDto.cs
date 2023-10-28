@@ -1,5 +1,5 @@
-﻿using Blog_API.Identity;
-using Blog_API.Modules.Blog;
+﻿using Blog_API.Modules.Blog;
+using Blog_API.Modules.Users;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Blog_API.Modules.Likes_Comments.Dtos
@@ -10,6 +10,6 @@ namespace Blog_API.Modules.Likes_Comments.Dtos
 
         public BlogEntity? Blog { get; set; }
         public Guid? UserId { get; set; }
-        public ApplicationUser? User { get; set; }
+        public UsersEntity? User { get; set; }
     }
 }

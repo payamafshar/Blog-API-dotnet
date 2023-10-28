@@ -1,13 +1,10 @@
 ﻿using Blog_API.ApplicationDbContext;
-using Blog_API.Identity;
 using Blog_API.JwtServices;
 using Blog_API.Mapping;
 using Blog_API.Modules.Blog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Identity;
 using Blog_API.Modules.Likes_Comments;
 using Newtonsoft.Json;
 using Microsoft.OpenApi.Models;
@@ -22,6 +19,12 @@ namespace Blog_API.ConfigurationExtention
 
             services.AddControllers(options =>
             {
+                //Accesing to logger service for action Filter requirement
+                //var logger = services.BuildServiceProvider().GetRequiredService<ILogger<ModelStateValidatorForSpeceficController>>();
+                //Adding Filter Globaly Way 1
+                //options.Filters.Add(new ModelStateValidatorForSpeceficController(logger, "exampleKey", "exampleValue",2));
+                //Adding Filter Globaly Way 2
+                //options.Filters<ModelStateValidatorForSpeceficController>(5);
 
                 //Authorization Policy [Authoriza] Globaly
                 //ar policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
@@ -66,8 +69,9 @@ namespace Blog_API.ConfigurationExtention
             services.AddTransient<IJwtService, JwtService>();
             services.AddScoped<IBlogService, BlogService>();
             services.AddScoped<ILikeAndCommentService, LikesAndCommentService>();
+            services.AddHttpContextAccessor();
 
-  
+
             //DbContext
             services.AddDbContext<BlogDbContext>(options =>
             {
@@ -97,21 +101,6 @@ namespace Blog_API.ConfigurationExtention
 
             });
             */
-            //Identity
-            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
-            {
-                //can config the password
-                options.Password.RequiredLength = 5;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireDigit = false;
-                options.Password.RequiredUniqueChars = 0;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireUppercase = false;
-            })
-                .AddEntityFrameworkStores<BlogDbContext>()
-                .AddDefaultTokenProviders()
-                .AddUserStore<UserStore<ApplicationUser, ApplicationRole, BlogDbContext, Guid>>()
-                .AddRoleStore<RoleStore<ApplicationRole, BlogDbContext, Guid>>();
             //JWT
             services.AddAuthentication(options =>
             {
@@ -135,8 +124,31 @@ namespace Blog_API.ConfigurationExtention
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
                 };
+                //options.Authority = configuration["AuthortyUrl"];
+                options.RequireHttpsMetadata = false;
+                options.Events = new JwtBearerEvents
+                {
+                    
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        // If the request is for our hub...
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            (path.StartsWithSegments("/chat")))
+                        {
+                            // Read the token out of the query string
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            
+               
+            
             });
             services.AddAuthorization();
+            services.AddSignalR();
             return services;
         }
     }
